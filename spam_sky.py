@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 
 # Reading csv file data set
@@ -22,13 +21,6 @@ total = size[0] + size[1]
 # Set label spam to 1 and ham to 0 as concept
 mails['concept'] = mails['labels'].map({'ham': 0, 'spam': 1})
 mails.drop(['labels'], axis=1, inplace=True)
-
-# Split dataset
-    # message = mails.message
-    # concept = mails.concept
-    #
-    # message_train, message_test, concept_train, concept_test = train_test_split(message, concept)
-    # Above using train_test_data_split from sklearn
 
 train_index, test_index = list(), list()
 for i in range(mails.shape[0]):
@@ -50,19 +42,43 @@ message_test = test_data.message
 concept_train = train_data.concept
 concept_test = test_data.concept
 
-vectorizer = CountVectorizer(lowercase=True, stop_words='english')
 
+vectorizer = CountVectorizer(lowercase=True, stop_words='english')
+# Train the NB classifier
 message_train_counts = vectorizer.fit_transform(message_train.values)
 NB_classifier = MultinomialNB()
 targets = concept_train.values
 NB_classifier.fit(message_train_counts, targets)
 
+# Predict testing set with trained classifier
 prediction_train = NB_classifier.predict(message_train_counts)
 accuracy_train = accuracy_score(concept_train, prediction_train)
-print('accuracy score on training set is: ', accuracy_train )
+
+print('')
+print('---------------------------------------')
+print('SINGLE FOLD RESULT ', '(', 'Naive Bayes', ')')
+print('---------------------------------------')
+print('')
+print('The accuracy score of NB classifier on train set is: ', accuracy_train)
+print('')
 
 message_test_counts = vectorizer.transform(message_test.values)
 prediction_test = NB_classifier.predict(message_test_counts)
 accuracy_test = accuracy_score(concept_test, prediction_test)
-print('accuracy score on training set is: ', accuracy_test)
+print('The accuracy score of NB classifier on test set is: ', accuracy_test)
 
+message_trained_vocabulary = sorted(vectorizer.vocabulary_.items(), key=lambda item:item[1],reverse=True)
+
+# predict single message input
+def nb_predict(message):
+    # vectorize message
+    v_m = vectorizer.transform([message])
+    # prediction
+    prediction = NB_classifier.predict(v_m)
+    if prediction[0] == 1:
+        cl = 'spam'
+    else:
+        cl = 'ham'
+    print('The message tends to be', cl)
+
+    return cl
