@@ -52,6 +52,21 @@ Out[5]: 'spam'
 
 * Example
 
+## NB Reiew Classifier
+* apply NB classifiers on yelp review
+* similar function usage as before
+* `NBReviewClassifier.py`
+## Maxent Review Classifier
+* apply MA classifiers on yelp review
+* similar function usage as before
+* Run `Review_maxent.py`
+* This Maxent Filter takes about 1 hour to train. Time variance apply on different machines.
+
+## Good word review test
+* Evaluate different parameters 
+* Run `good_word_review_test.py`
+* n1, n2, n3 .... n8 to check parameters under different words adding strategy.
+
 ```python
  In[3]: word_attack_NB(first_n_word,'Please call our customer service representative on 0800 169 6031 between 10am-9pm as you have WON a guaranteed a £1000 cash or a £5000 prize')
 Out[3]: 2383
